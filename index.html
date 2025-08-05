@@ -73,7 +73,10 @@
         <button id="emailBtn" class="btn-primary" style="margin-bottom: 1rem;">Email us</button>
         <!-- Contact Form (hidden by default) -->
         <!-- Updated contact form to send emails to the 'info' inbox (newly created in Zoho) -->
-        <form id="contactForm" class="contact-form" action="mailto:info@sentinel-sky.com" method="post" enctype="text/plain" style="display: none;">
+        <!-- Updated form uses a third-party service to send submissions directly -->
+        <form id="contactForm" class="contact-form" action="https://formsubmit.co/ajax/info@sentinel-sky.com" method="POST" style="display: none;">
+            <!-- Hidden subject line for emails -->
+            <input type="hidden" name="_subject" value="New contact form submission">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="Name" placeholder="Your full name" required>
@@ -102,6 +105,10 @@
             </div>
             <button type="submit" class="btn-primary">Send message</button>
         </form>
+        <!-- Success message (hidden by default) -->
+        <div id="submissionMessage" class="submission-message" style="display:none;">
+            Thank you! Your message has been sent.
+        </div>
     </section>
 
     <footer>
@@ -121,6 +128,34 @@
                 // Show the form and hide the button
                 contactForm.style.display = 'block';
                 emailBtn.style.display = 'none';
+            });
+        }
+
+        // Handle form submission via AJAX to avoid opening a mail client
+        const submissionMessage = document.getElementById('submissionMessage');
+        if (contactForm && submissionMessage) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(contactForm);
+                fetch('https://formsubmit.co/ajax/info@sentinel-sky.com', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        // Hide the form and show success message
+                        contactForm.style.display = 'none';
+                        submissionMessage.style.display = 'block';
+                        // Optionally reset the form
+                        contactForm.reset();
+                    } else {
+                        // Display an error if something goes wrong
+                        submissionMessage.style.display = 'block';
+                        submissionMessage.textContent = 'There was an issue sending your message. Please try again later.';
+                    }
+                }).catch(() => {
+                    submissionMessage.style.display = 'block';
+                    submissionMessage.textContent = 'There was an issue sending your message. Please try again later.';
+                });
             });
         }
     </script>

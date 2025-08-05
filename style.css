@@ -278,6 +278,14 @@ section h2 {
   background-color: #ddb108;
 }
 
+/* Submission message styling */
+.submission-message {
+  color: #fff;
+  margin-top: 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
 /* Footer */
 footer {
   background-color: #001A3A;
